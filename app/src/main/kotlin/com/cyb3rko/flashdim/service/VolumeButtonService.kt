@@ -70,15 +70,10 @@ class VolumeButtonService : AccessibilityService() {
         return false
     }
 
-    private fun getFlashLevel(): Int {
-        if (!Safe.getBoolean(Safe.VOLUME_BUTTONS_LINK, false)) return -1
-
-        val preferredLevel = Safe.getInt(Safe.PREFERRED_LEVEL, -1)
-        if (preferredLevel < 1) return -1
-
-        val cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
-        val cameraId = cameraManager.cameraIdList.firstOrNull() ?: return -1
-        return Camera.getValidFlashLevel(cameraManager, cameraId, preferredLevel)
+    private fun getFlashLevel(): Int = if (Safe.getBoolean(Safe.VOLUME_BUTTONS_LINK, false)) {
+        Safe.getInt(Safe.PREFERRED_LEVEL, -1)
+    } else {
+        -1
     }
 
     override fun onInterrupt() {
